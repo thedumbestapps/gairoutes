@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="settings_map_source_entries">
+        <item>Mapnik</item>
+        <item>Open Cycle Map</item>
+        <item>Map Quest</item>
+    </string-array>
+
+    <string-array name="settings_map_source_entry_values">
+        <item>Mapnik</item>
+        <item>CycleMap</item>
+        <item>MapquestOSM</item>
+    </string-array>
+</resources>

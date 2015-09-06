@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable name="zoomButtonHandler" type="com.tda.gairoutes.ui.fragment.MapFragment"/>
+    </data>
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:context=".MainActivity$PlaceholderFragment"
+                    android:orientation="vertical">
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/mvMap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <Button
+            android:id="@+id/bZoomIn"
+            android:background="@drawable/mr_ic_play_dark"
+            android:layout_width="48dp"
+            android:layout_height= "48dp"
+            android:layout_marginLeft="@dimen/horizontal_margin"
+            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/vertical_margin"
+            android:onClick="@{zoomButtonHandler.onZoomIn}"
+            android:visibility="gone"/> <!-- do we need it? -->
+
+        <Button
+            android:id="@+id/bZoomOut"
+            android:background="@drawable/mr_ic_play_light"
+            android:layout_width="48dp"
+            android:layout_height= "48dp"
+            android:layout_below="@id/bZoomIn"
+            android:layout_marginLeft="@dimen/horizontal_margin"
+            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/vertical_margin"
+            android:onClick="@{zoomButtonHandler.onZoomOut}"
+            android:visibility="gone"/> <!-- do we need it? -->
+
+    </RelativeLayout>
+</layout>
