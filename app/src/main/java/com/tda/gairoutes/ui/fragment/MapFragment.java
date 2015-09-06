@@ -8,16 +8,22 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.tda.gairoutes.R;
 import com.tda.gairoutes.databinding.FragmentMapBinding;
 import com.tda.gairoutes.general.AppAdapter;
 import com.tda.gairoutes.manager.SettingsManager;
 import com.tda.gairoutes.misc.util.CSVUtil;
+import com.tda.gairoutes.misc.util.DateUtil;
 
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
@@ -33,13 +39,16 @@ import timber.log.Timber;
 /**
  * Created by Alexey on 8/28/2015.
  */
-public class MapFragment extends BaseFragment implements
-        GoogleApiClient.ConnectionCallbacks {
+public class MapFragment extends BaseFragment {
 
     public static final int MIN_ZOOM = 3;
     public static final int DEFAULT_ZOOM = 15;
 
+    public static final int LOCATION_UPDATE_INTERVAL = 2 * DateUtil.MS_IN_SEC;
+
     private Location mCurrentLocation;
+    private LocationRequest mLocationRequest;
+    private LocationListener mLocationListener;
     private GoogleApiClient mGoogleApiClient;
     private SettingsManager mSettingsManager;
     private ResourceProxy mResourceProxy;
@@ -68,6 +77,15 @@ public class MapFragment extends BaseFragment implements
                 }
             }
         };
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(LOCATION_UPDATE_INTERVAL);
+        mLocationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                setCurrentLocation(location);
+            }
+        };
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -91,11 +109,28 @@ public class MapFragment extends BaseFragment implements
     @Override
     public void onStart() {
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addConnectionCallbacks(this)
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle bundle) {
+                        updateCurrentLocationWithLastLocation();
+                        // If need to follow
+                        // LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, mLocationListener);
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int i) {}
+                })
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
         super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        // If need to stop follow
+        // LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, mLocationListener);
+        super.onStop();
     }
 
     @Override
@@ -112,16 +147,30 @@ public class MapFragment extends BaseFragment implements
         mSettingsManager.getSharedPreferences().unregisterOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
     }
 
-    //
     @Override
-    public void onConnected(Bundle bundle) {
-        updateCurrentLocation(LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient));
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
     }
-    @Override
-    public void onConnectionSuspended(int i) {}
-    //
 
-    private void updateCurrentLocation(Location location) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_find_me:
+                updateCurrentLocationWithLastLocation();
+                return true;
+            case R.id.menu_route:
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void updateCurrentLocationWithLastLocation() {
+        setCurrentLocation(LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient));
+    }
+
+    private void setCurrentLocation(Location location) {
         mCurrentLocation = location;
         final GeoPoint currentPosition = new GeoPoint(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         mBinding.mvMap.getController().setCenter(currentPosition);
@@ -141,12 +190,12 @@ public class MapFragment extends BaseFragment implements
                 }, mResourceProxy);
         mBinding.mvMap.getOverlays().add(currentLocationOverlay);*/
 
-        PathOverlay routePath = new PathOverlay(Color.RED, 5f, mResourceProxy);
+        /*PathOverlay routePath = new PathOverlay(Color.RED, 5f, mResourceProxy);
         routePath.addPoints(CSVUtil.getPointsFromCsvFile(new File(Environment.getExternalStorageDirectory(), "Home-chiki-mother.csv")));
         mBinding.mvMap.getOverlays().add(routePath);
 
         mBinding.mvMap.getOverlays().add(mCurrentLocationOverlay);
-        mBinding.mvMap.invalidate();
+        mBinding.mvMap.invalidate();*/
     }
 
     private void changeMapSource() {

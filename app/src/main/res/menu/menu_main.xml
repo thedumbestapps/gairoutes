@@ -13,12 +13,12 @@
           android:title="@string/menu_route"
           android:icon="@android:drawable/ic_menu_more"
           android:orderInCategory="90"
-          app:showAsAction="always|withText" />
+          app:showAsAction="always|withText"/>
     <item android:id="@+id/menu_find_me"
           android:title="@string/menu_find_me"
           android:icon="@android:drawable/ic_menu_mylocation"
           android:orderInCategory="80"
-          app:showAsAction="always" />
+          app:showAsAction="always"/>
     <item android:id="@+id/menu_about"
           android:title="@string/menu_about"
           android:orderInCategory="110"

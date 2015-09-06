@@ -32,12 +32,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_find_me:
-
-                return true;
-            case R.id.menu_route:
-
-                return true;
             case R.id.menu_map:
                 DialogManager.getDialog(this, DialogManager.ID_MAP_SOURCE).show();
                 return true;
