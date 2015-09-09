@@ -14,9 +14,9 @@
           android:icon="@android:drawable/ic_menu_more"
           android:orderInCategory="90"
           app:showAsAction="always|withText"/>
-    <item android:id="@+id/menu_find_me"
-          android:title="@string/menu_find_me"
-          android:icon="@android:drawable/ic_menu_mylocation"
+    <item android:id="@+id/menu_follow_me"
+          android:title="@string/menu_follow_me"
+          android:icon="@android:drawable/ic_menu_view"
           android:orderInCategory="80"
           app:showAsAction="always"/>
     <item android:id="@+id/menu_about"

@@ -6,7 +6,7 @@
 
     <string name="menu_map">Map Source</string>
     <string name="menu_route">Route</string>
-    <string name="menu_find_me">Find me</string>
+    <string name="menu_follow_me">Follow me</string>
     <string name="menu_about">About</string>
 
     <string name="dialog_title_map_source">Map Source</string>

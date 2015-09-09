@@ -9,6 +9,7 @@ import com.tda.gairoutes.general.AppAdapter;
 
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
 
 /**
  * Created by Alexey on 8/29/2015.
@@ -16,6 +17,10 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 public class SettingsManager {
 
     public static final String PREF_MAP_SOURCE = "settings_map_source";
+    public static final String PREF_FOLLOW_MODE = "settings_follow_mode";
+    public static final String PREF_LAST_LOCATION = "settings_last_location";
+
+    private static final String PREF_LAST_LOCATION_DEFAULT_VALUE = new GeoPoint(53858238, 27502154).toString();
 
     private Context mContext;
     private SharedPreferences mSharedPreferences;
@@ -43,6 +48,24 @@ public class SettingsManager {
 
     public void setPrefMapSource(String mapSource) {
         mEditor.putString(PREF_MAP_SOURCE, mapSource);
+        mEditor.commit();
+    }
+
+    public boolean getFollowMode() {
+        return mSharedPreferences.getBoolean(PREF_FOLLOW_MODE, false);
+    }
+
+    public void setFollowMode(boolean followMode) {
+        mEditor.putBoolean(PREF_FOLLOW_MODE, followMode);
+        mEditor.commit();
+    }
+
+    public GeoPoint getLastLocation() {
+        return GeoPoint.fromIntString(mSharedPreferences.getString(PREF_LAST_LOCATION, PREF_LAST_LOCATION_DEFAULT_VALUE));
+    }
+
+    public void setLastLocation(GeoPoint geoPoint) {
+        mEditor.putString(PREF_LAST_LOCATION, geoPoint.toString());
         mEditor.commit();
     }
 
