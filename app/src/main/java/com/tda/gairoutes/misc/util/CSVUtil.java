@@ -1,6 +1,5 @@
 package com.tda.gairoutes.misc.util;
 
-import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.File;
@@ -19,10 +18,10 @@ public class CSVUtil {
 
     private CSVUtil() {};
 
-    public static List<IGeoPoint> getPointsFromCsvFile(File csvFile) {
+    public static List<GeoPoint> getPointsFromCsvFile(File csvFile) {
         try {
             List<String> listOfLines = FileUtil.getTextFileContentAsListOfLines(csvFile);
-            List<IGeoPoint> points = new ArrayList<>(listOfLines.size());
+            List<GeoPoint> points = new ArrayList<>(listOfLines.size());
             boolean firstLine = true;
             for (String line : listOfLines) {
                 if (!firstLine) {

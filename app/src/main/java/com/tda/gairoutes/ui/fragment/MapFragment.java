@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.graphics.Canvas;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,12 +17,17 @@ import com.tda.gairoutes.R;
 import com.tda.gairoutes.databinding.FragmentMapBinding;
 import com.tda.gairoutes.general.AppAdapter;
 import com.tda.gairoutes.manager.SettingsManager;
+import com.tda.gairoutes.misc.util.CSVUtil;
+import com.tda.gairoutes.ui.gfx.map.PathUtil;
 
+import org.osmdroid.bonuspack.overlays.Polyline;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
+import java.io.File;
 
 import timber.log.Timber;
 
@@ -115,6 +121,10 @@ public class MapFragment extends BaseFragment {
         super.onResume();
         mCurrentLocationOverlay.enableMyLocation();
         mSettingsManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
+
+        Polyline routePath = PathUtil.getRoutePath();
+        routePath.setPoints(CSVUtil.getPointsFromCsvFile(new File(Environment.getExternalStorageDirectory(), "Home-chiki-mother.csv")));
+        mBinding.mvMap.getOverlays().add(routePath);
     }
 
     @Override
@@ -167,28 +177,6 @@ public class MapFragment extends BaseFragment {
             mBinding.mvMap.getController().setCenter(geoPoint);
         }
     }
-
-    /*
-        ItemizedOverlay<OverlayItem> currentLocationOverlay = new ItemizedIconOverlay<OverlayItem>(
-                new ArrayList<OverlayItem>() {{add(new OverlayItem("You are here", "Yep, right here", currentPosition));}},
-                new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-                    @Override
-                    public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
-                        return true;
-                    }
-                    @Override
-                    public boolean onItemLongPress(final int index, final OverlayItem item) {
-                        return false;
-                    }
-                }, mResourceProxy);
-        mBinding.mvMap.getOverlays().add(currentLocationOverlay);*/
-
-        /*PathOverlay routePath = new PathOverlay(Color.RED, 5f, mResourceProxy);
-        routePath.addPoints(CSVUtil.getPointsFromCsvFile(new File(Environment.getExternalStorageDirectory(), "Home-chiki-mother.csv")));
-        mBinding.mvMap.getOverlays().add(routePath);
-
-        mBinding.mvMap.getOverlays().add(mCurrentLocationOverlay);
-        mBinding.mvMap.invalidate();*/
 
     private void changeMapSource() {
         ITileSource mapSource = mSettingsManager.getMapSource();
