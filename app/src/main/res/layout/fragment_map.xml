@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
-        <variable name="zoomButtonHandler" type="com.tda.gairoutes.ui.fragment.MapFragment"/>
+        <variable name="mapFragmentController" type="com.tda.gairoutes.ui.fragment.MapFragment"/>
     </data>
     <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
                     android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             android:layout_marginLeft="@dimen/horizontal_margin"
             android:layout_marginStart="@dimen/horizontal_margin"
             android:layout_marginTop="@dimen/vertical_margin"
-            android:onClick="@{zoomButtonHandler.onZoomIn}"
+            android:onClick="@{mapFragmentController.onZoomIn}"
             android:visibility="gone"/> <!-- do we need it? -->
 
         <Button
@@ -34,7 +34,7 @@
             android:layout_marginLeft="@dimen/horizontal_margin"
             android:layout_marginStart="@dimen/horizontal_margin"
             android:layout_marginTop="@dimen/vertical_margin"
-            android:onClick="@{zoomButtonHandler.onZoomOut}"
+            android:onClick="@{mapFragmentController.onZoomOut}"
             android:visibility="gone"/> <!-- do we need it? -->
 
     </RelativeLayout>

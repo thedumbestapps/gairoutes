@@ -10,5 +10,7 @@ public class DateUtil {
     public static final int MS_IN_HOUR = 60 * MS_IN_MIN;
     public static final int MS_IN_DAY = 24 * MS_IN_HOUR;
 
+    public static final String DD_MMM_YYYY = "dd-MMM-yyyy";
+
     private DateUtil() {}
 }

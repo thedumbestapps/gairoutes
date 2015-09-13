@@ -37,9 +37,9 @@ public class MapFragment extends BaseFragment {
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener;
     private Menu mToolbarMenu;
 
-    MyLocationNewOverlay mCurrentLocationOverlay;
+    private MyLocationNewOverlay mCurrentLocationOverlay;
 
-    FragmentMapBinding mBinding;
+    private FragmentMapBinding mBinding;
 
     @Override
     public void onAttach(Activity activity) {
@@ -65,7 +65,7 @@ public class MapFragment extends BaseFragment {
     @Override
     protected View initBinder(LayoutInflater inflater, ViewGroup container) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false);
-        mBinding.setZoomButtonHandler(this);
+        mBinding.setMapFragmentController(this);
         return mBinding.getRoot();
     }
 

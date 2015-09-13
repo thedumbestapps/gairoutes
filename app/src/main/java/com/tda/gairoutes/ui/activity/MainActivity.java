@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
                 DialogManager.getDialog(this, DialogManager.ID_MAP_SOURCE).show();
                 return true;
             case R.id.menu_about:
-
+                DialogManager.getDialog(this, DialogManager.ID_ABOUT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
