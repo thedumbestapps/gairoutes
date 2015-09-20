@@ -24,7 +24,7 @@ public class RouteManager {
 
     public static final File ROUTES_INTERNAL_LOCATION = new File(AppAdapter.context().getFilesDir(), "routes");
 
-    private static final String ROUTES_REMOTE_URL = "https://www.dropbox.com/s/n3aza4oov9rm7zb/routes.zip?dl=0";
+    private static final String ROUTES_REMOTE_URL = "https://docs.google.com/uc?authuser=0&id=0B25Olm7mh7MyMHAwUFE0T2puWG8&export=download";
     private static final String ROUTES_ARCHIVE_FILENAME = "routes.zip";
 
     public interface UpdateListener {

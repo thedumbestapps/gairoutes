@@ -6,14 +6,17 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.View;
+import android.widget.Toast;
 
 import com.tda.gairoutes.BuildConfig;
 import com.tda.gairoutes.R;
 import com.tda.gairoutes.databinding.DialogAboutBinding;
+import com.tda.gairoutes.manager.RouteManager;
 import com.tda.gairoutes.manager.SettingsManager;
 import com.tda.gairoutes.misc.util.AppUtil;
 import com.tda.gairoutes.misc.util.DateUtil;
 import com.tda.gairoutes.misc.util.StringUtil;
+import com.tda.gairoutes.ui.fragment.ProgressFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -89,7 +92,7 @@ public class DialogManager {
         AppUtil.sendEmailToAuthor();
     }
 
-    private static void buildRoutesDialog(Activity activity, final AlertDialog.Builder builder) {
+    private static void buildRoutesDialog(final Activity activity, final AlertDialog.Builder builder) {
         final SettingsManager settingsManager = new SettingsManager();
 
         builder.setTitle(R.string.dialog_title_routes);
@@ -104,6 +107,37 @@ public class DialogManager {
             public void onClick(DialogInterface dialog, int which) {
                 settingsManager.setCurrentRoute(routes[which]);
                 dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton(R.string.dialog_button_update, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialog, int which) {
+                ProgressFragment.show(activity.getFragmentManager());
+                RouteManager.updateRoutes(new RouteManager.UpdateListener() {
+                    @Override
+                    public void onUpdateComplete() {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                AlertDialog.Builder altBuilder = new AlertDialog.Builder(activity);
+                                DialogManager.buildRoutesDialog(activity, altBuilder);
+                                altBuilder.show();
+                                ProgressFragment.cancel();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onUpdateError() {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ProgressFragment.cancel();
+                                Toast.makeText(activity, R.string.toast_cant_update_routes, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
             }
         });
     }

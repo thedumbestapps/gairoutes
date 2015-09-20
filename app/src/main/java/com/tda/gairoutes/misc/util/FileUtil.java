@@ -11,8 +11,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import timber.log.Timber;
@@ -82,27 +84,40 @@ public class FileUtil {
         }
     }
 
-    public static boolean unzip(File zipFile, File targetDirectory) {
-        Timber.d("Start unzipping " + zipFile.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
-        InputStream is = null;
+    public static boolean unzip(File fileToZip, File targetDirectory) {
+        Timber.d("Start unzipping " + fileToZip.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
         try {
-            is = new FileInputStream(zipFile);
-            boolean result = unzip(is, targetDirectory);
-            if (result) {
-                zipFile.delete();
+            ZipFile zipFile = new ZipFile(fileToZip);
+            int count;
+            byte[] buffer = new byte[8192];
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            ZipEntry zipEntry;
+            while (entries.hasMoreElements()) {
+                zipEntry = entries.nextElement();
+                File file = new File(targetDirectory, zipEntry.getName());
+                Timber.d("Processing zip entry " + zipEntry.getName());
+                if (zipEntry.isDirectory()) {
+                    file.mkdirs();
+                } else {
+                    file.getParentFile().mkdirs();
+                    FileOutputStream outputStream = new FileOutputStream(file);
+                    InputStream inputStream = zipFile.getInputStream(zipEntry);
+                    try {
+                        while ((count = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, count);
+                        }
+                    } finally {
+                        outputStream.close();
+                        inputStream.close();
+                    }
+                }
             }
-            return result;
+            Timber.d("Unzipping done");
+            fileToZip.delete();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 

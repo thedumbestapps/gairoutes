@@ -26,12 +26,15 @@ public class DownloadManager {
 
     public static void downloadFile(String url, String path, String fileName, DownloadListener downloadListener) {
         try {
+            Timber.d("Start downloading from " + url + " to " + path);
             HttpURLConnection connection = (HttpURLConnection)new java.net.URL(url).openConnection();
             connection.setDoInput(true);
             connection.setConnectTimeout(TIMEOUT_TIME);
             connection.connect();
 
-            long length = Long.parseLong(connection.getHeaderField(CONTENT_LENGTH));
+            String lengthStringValue = connection.getHeaderField(CONTENT_LENGTH);
+            long length = lengthStringValue == null ? 0 : Long.parseLong(lengthStringValue);
+            Timber.d("File size = " + (length == 0 ? "unknown" : length));
             File filePath = new File(path);
             if (!filePath.exists()) filePath.mkdirs();
             File file = new File(filePath, fileName);
@@ -45,17 +48,18 @@ public class DownloadManager {
                 fos.write(buffer, 0, bytesRead);
                 bytesTotalRead += bytesRead;
                 if (downloadListener != null && length > 0) {
-                    downloadListener.onDownloadProgress(url, (int) (bytesTotalRead/length)*100);
+                    downloadListener.onDownloadProgress(url, (int) (bytesTotalRead / length) * 100);
                 }
             }
             fos.flush();
             fos.close();
             is.close();
             if (downloadListener != null) {
+                Timber.d("Download complete");
                 downloadListener.onDownloadComplete(url, file);
             }
         } catch (Exception e) {
-            Timber.e("Couldn't download file from " + url);
+            Timber.e(e, "Couldn't download file from " + url);
             if (downloadListener != null) {
                 downloadListener.onDownloadError(url, e);
             }

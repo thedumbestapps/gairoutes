@@ -5,8 +5,6 @@
     <string name="author_email">thedumbestapps@gmail.com</string>
     <string name="last_update">Last update: %s</string>
 
-    <string name="action_settings">Settings</string>
-
     <string name="menu_map">Map Source</string>
     <string name="menu_route">Route</string>
     <string name="menu_follow_me">Follow me</string>
@@ -16,4 +14,7 @@
     <string name="dialog_title_map_source">Map Source</string>
     <string name="dialog_title_about">About</string>
     <string name="dialog_title_routes">Routes</string>
+    <string name="dialog_button_update">Update</string>
+
+    <string name="toast_cant_update_routes">Can\'t update routes</string>
 </resources>
