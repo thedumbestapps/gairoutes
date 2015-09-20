@@ -3,6 +3,7 @@ package com.tda.gairoutes.general;
 import android.app.Application;
 
 import com.tda.gairoutes.BuildConfig;
+import com.tda.gairoutes.manager.RouteManager;
 
 import timber.log.Timber;
 
@@ -21,6 +22,7 @@ public class CustomApplication extends Application {
             //Fabric.with(this, new Crashlytics());
             Timber.plant(new CrashReportingTree());
         }
+        RouteManager.initRoutes();
     }
 
     @Override

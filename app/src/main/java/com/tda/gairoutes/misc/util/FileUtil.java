@@ -5,12 +5,17 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import timber.log.Timber;
 
 /**
  * Created by Alexey on 8/31/2015.
@@ -73,6 +78,70 @@ public class FileUtil {
                 closeable.close();
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    public static boolean unzip(File zipFile, File targetDirectory) {
+        Timber.d("Start unzipping " + zipFile.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
+        InputStream is = null;
+        try {
+            is = new FileInputStream(zipFile);
+            boolean result = unzip(is, targetDirectory);
+            if (result) {
+                zipFile.delete();
+            }
+            return result;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static boolean unzip(InputStream is, File targetDirectory) {
+        ZipInputStream zipInputStream = null;
+        try {
+            Timber.d("Start unzipping stream to " + targetDirectory.getAbsolutePath());
+            zipInputStream = new ZipInputStream(is);
+            ZipEntry zipEntry;
+            int count;
+            byte[] buffer = new byte[8192];
+            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                File file = new File(targetDirectory, zipEntry.getName());
+                if (zipEntry.isDirectory()) {
+                    file.mkdirs();
+                } else {
+                    file.getParentFile().mkdirs();
+                    FileOutputStream outputStream = new FileOutputStream(file);
+                    try {
+                        while ((count = zipInputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, count);
+                        }
+                    } finally {
+                        outputStream.close();
+                    }
+                }
+                Timber.d("Unzipping done");
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (zipInputStream != null) {
+                try {
+                    zipInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

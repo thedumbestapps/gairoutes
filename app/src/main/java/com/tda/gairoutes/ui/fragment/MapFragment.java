@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.graphics.Canvas;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,8 +15,9 @@ import android.view.ViewGroup;
 import com.tda.gairoutes.R;
 import com.tda.gairoutes.databinding.FragmentMapBinding;
 import com.tda.gairoutes.general.AppAdapter;
+import com.tda.gairoutes.manager.RouteManager;
 import com.tda.gairoutes.manager.SettingsManager;
-import com.tda.gairoutes.misc.util.CSVUtil;
+import com.tda.gairoutes.ui.dialog.DialogManager;
 import com.tda.gairoutes.ui.gfx.map.PathUtil;
 
 import org.osmdroid.bonuspack.overlays.Polyline;
@@ -27,7 +27,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import java.io.File;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -44,6 +44,7 @@ public class MapFragment extends BaseFragment {
     private Menu mToolbarMenu;
 
     private MyLocationNewOverlay mCurrentLocationOverlay;
+    private Polyline mRoutePath = PathUtil.getRoutePath();
 
     private FragmentMapBinding mBinding;
 
@@ -61,6 +62,9 @@ public class MapFragment extends BaseFragment {
                 switch (key) {
                     case SettingsManager.PREF_MAP_SOURCE:
                         changeMapSource();
+                        break;
+                    case SettingsManager.PREF_CURRENT_ROUTE:
+                        changeRoute();
                         break;
                 }
             }
@@ -121,10 +125,9 @@ public class MapFragment extends BaseFragment {
         super.onResume();
         mCurrentLocationOverlay.enableMyLocation();
         mSettingsManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
-
-        Polyline routePath = PathUtil.getRoutePath();
-        routePath.setPoints(CSVUtil.getPointsFromCsvFile(new File(Environment.getExternalStorageDirectory(), "Home-chiki-mother.csv")));
-        mBinding.mvMap.getOverlays().add(routePath);
+        if (mSettingsManager.getCurrentRoute() != null) {
+            changeRoute();
+        }
     }
 
     @Override
@@ -150,7 +153,10 @@ public class MapFragment extends BaseFragment {
                 mSettingsManager.setFollowMode(newFollowMode);
                 return true;
             case R.id.menu_route:
-
+                DialogManager.getDialog(getActivity(), DialogManager.ID_ROUTES).show();
+                return true;
+            case R.id.menu_clean_map:
+                mSettingsManager.setCurrentRoute(null);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -182,6 +188,22 @@ public class MapFragment extends BaseFragment {
         ITileSource mapSource = mSettingsManager.getMapSource();
         Timber.d("Setting '%s' changed to '%s'", SettingsManager.PREF_MAP_SOURCE, mapSource.name());
         mBinding.mvMap.setTileSource(mapSource);
+    }
+
+    private void changeRoute() {
+        mBinding.mvMap.getOverlays().remove(mRoutePath);
+        String currentRoute = mSettingsManager.getCurrentRoute();
+        Timber.d("Setting '%s' changed to '%s'", SettingsManager.PREF_CURRENT_ROUTE, currentRoute);
+        if (currentRoute != null) {
+            List<GeoPoint> points = RouteManager.getGeoPointsForRoute(currentRoute);
+            if (points != null) {
+                mRoutePath.setPoints(points);
+            } else {
+                // TODO Route is broken
+            }
+            mBinding.mvMap.getOverlays().add(mRoutePath);
+        }
+        mBinding.mvMap.invalidate();
     }
 
     public void onZoomIn(View view) {

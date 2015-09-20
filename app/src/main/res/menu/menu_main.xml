@@ -19,6 +19,11 @@
           android:icon="@android:drawable/ic_menu_view"
           android:orderInCategory="80"
           app:showAsAction="always"/>
+    <item android:id="@+id/menu_clean_map"
+          android:title="@string/menu_clean_map"
+          android:icon="@android:drawable/ic_delete"
+          android:orderInCategory="109"
+          app:showAsAction="never"/>
     <item android:id="@+id/menu_about"
           android:title="@string/menu_about"
           android:orderInCategory="110"

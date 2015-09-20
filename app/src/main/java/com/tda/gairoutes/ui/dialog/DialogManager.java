@@ -27,6 +27,7 @@ public class DialogManager {
 
     public static final int ID_MAP_SOURCE = 1;
     public static final int ID_ABOUT = 2;
+    public static final int ID_ROUTES = 3;
 
     public static AlertDialog getDialog(Activity activity, int id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -36,6 +37,9 @@ public class DialogManager {
                 return builder.create();
             case ID_ABOUT:
                 buildAboutDialog(activity, builder);
+                return builder.create();
+            case ID_ROUTES:
+                buildRoutesDialog(activity, builder);
                 return builder.create();
             default:
                 throw new IllegalArgumentException("No dialog with such id=" + id);
@@ -83,5 +87,24 @@ public class DialogManager {
 
     public void onAuthorClick(View view) {
         AppUtil.sendEmailToAuthor();
+    }
+
+    private static void buildRoutesDialog(Activity activity, final AlertDialog.Builder builder) {
+        final SettingsManager settingsManager = new SettingsManager();
+
+        builder.setTitle(R.string.dialog_title_routes);
+        builder.setCancelable(true);
+
+        final String[] routes = settingsManager.getRoutes().toArray(new String[settingsManager.getRoutes().size()]);
+        String currentRoute = settingsManager.getCurrentRoute();
+        int currentRouteIndex = Arrays.asList(routes).indexOf(currentRoute);
+
+        builder.setSingleChoiceItems(routes, currentRouteIndex, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                settingsManager.setCurrentRoute(routes[which]);
+                dialog.dismiss();
+            }
+        });
     }
 }
