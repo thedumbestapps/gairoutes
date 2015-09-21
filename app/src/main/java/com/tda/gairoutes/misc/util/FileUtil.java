@@ -74,16 +74,6 @@ public class FileUtil {
         return buffer.toString();
     }
 
-    private static void close(Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public static boolean unzip(File fileToZip, File targetDirectory) {
         Timber.d("Start unzipping " + fileToZip.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
         try {
@@ -107,8 +97,8 @@ public class FileUtil {
                             outputStream.write(buffer, 0, count);
                         }
                     } finally {
-                        outputStream.close();
-                        inputStream.close();
+                        close(outputStream);
+                        close(inputStream);
                     }
                 }
             }
@@ -151,12 +141,16 @@ public class FileUtil {
             e.printStackTrace();
             return false;
         } finally {
-            if (zipInputStream != null) {
-                try {
-                    zipInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            close(zipInputStream);
+        }
+    }
+
+    private static void close(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
