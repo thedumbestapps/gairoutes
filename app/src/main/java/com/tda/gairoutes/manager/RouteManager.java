@@ -40,6 +40,7 @@ public class RouteManager {
                         new DownloadManager.DownloadListener() {
                             @Override
                             public void onDownloadComplete(String url, File file) {
+                                ROUTES_INTERNAL_LOCATION.delete();
                                 if (FileUtil.unzip(file, ROUTES_INTERNAL_LOCATION)) {
                                     saveRoutes();
                                     updateListener.onUpdateComplete();
@@ -74,6 +75,7 @@ public class RouteManager {
         InputStream is = null;
         try {
             is = assetManager.open(ROUTES_ARCHIVE_FILENAME);
+            ROUTES_INTERNAL_LOCATION.delete();
             if (FileUtil.unzip(is, ROUTES_INTERNAL_LOCATION)) {
                 saveRoutes();
                 Timber.d("Routes init done");
