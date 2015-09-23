@@ -24,8 +24,6 @@ import timber.log.Timber;
  */
 public class FileUtil {
 
-    public static String ENCODING_UTF8 = "UTF-8";
-
     private FileUtil() {}
 
     public static List<String> getTextFileContentAsListOfLines(File file) throws FileNotFoundException {
@@ -35,7 +33,7 @@ public class FileUtil {
         BufferedReader br = null;
         try {
             fis = new FileInputStream(file);
-            isr = new InputStreamReader(fis, Charset.forName(ENCODING_UTF8));
+            isr = new InputStreamReader(fis, Charset.forName(StringUtil.ENCODING_UTF8));
             br = new BufferedReader(isr);
             String line;
             while ((line = br.readLine()) != null) {
@@ -44,9 +42,9 @@ public class FileUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            close(fis);
-            close(isr);
-            close(br);
+            closeStream(fis);
+            closeStream(isr);
+            closeStream(br);
         }
         return lines;
     }
@@ -58,7 +56,7 @@ public class FileUtil {
         BufferedReader br = null;
         try {
             fis = new FileInputStream(file);
-            isr = new InputStreamReader(fis, Charset.forName(ENCODING_UTF8));
+            isr = new InputStreamReader(fis, Charset.forName(StringUtil.ENCODING_UTF8));
             br = new BufferedReader(isr);
             String line;
             while ((line = br.readLine()) != null) {
@@ -67,9 +65,9 @@ public class FileUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            close(fis);
-            close(isr);
-            close(br);
+            closeStream(fis);
+            closeStream(isr);
+            closeStream(br);
         }
         return buffer.toString();
     }
@@ -84,7 +82,7 @@ public class FileUtil {
             ZipEntry zipEntry;
             while (entries.hasMoreElements()) {
                 zipEntry = entries.nextElement();
-                File file = new File(targetDirectory, zipEntry.getName());
+                File file = new File(targetDirectory, /*StringUtil.decodeStringToUTF8(*/zipEntry.getName()/*, StringUtil.ENCODING_ISO_8859)*/);
                 Timber.d("Processing zip entry " + zipEntry.getName());
                 if (zipEntry.isDirectory()) {
                     file.mkdirs();
@@ -97,8 +95,8 @@ public class FileUtil {
                             outputStream.write(buffer, 0, count);
                         }
                     } finally {
-                        close(outputStream);
-                        close(inputStream);
+                        closeStream(outputStream);
+                        closeStream(inputStream);
                     }
                 }
             }
@@ -141,11 +139,21 @@ public class FileUtil {
             e.printStackTrace();
             return false;
         } finally {
-            close(zipInputStream);
+            closeStream(zipInputStream);
         }
     }
 
-    private static void close(Closeable closeable) {
+    public static void deleteFile(File file) {
+        if (file.isDirectory()) {
+            for (File subFile : file.listFiles()) {
+                deleteFile(subFile);
+            }
+        } else {
+            file.delete();
+        }
+    }
+
+    public static void closeStream(Closeable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();

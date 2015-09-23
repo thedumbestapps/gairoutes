@@ -40,7 +40,7 @@ public class RouteManager {
                         new DownloadManager.DownloadListener() {
                             @Override
                             public void onDownloadComplete(String url, File file) {
-                                ROUTES_INTERNAL_LOCATION.delete();
+                                FileUtil.deleteFile(ROUTES_INTERNAL_LOCATION);
                                 if (FileUtil.unzip(file, ROUTES_INTERNAL_LOCATION)) {
                                     saveRoutes();
                                     updateListener.onUpdateComplete();
@@ -71,26 +71,22 @@ public class RouteManager {
     }
 
     public static void initRoutes() {
-        AssetManager assetManager = AppAdapter.context().getAssets();
-        InputStream is = null;
-        try {
-            is = assetManager.open(ROUTES_ARCHIVE_FILENAME);
-            ROUTES_INTERNAL_LOCATION.delete();
-            if (FileUtil.unzip(is, ROUTES_INTERNAL_LOCATION)) {
-                saveRoutes();
-                Timber.d("Routes init done");
-            } else {
-                Timber.d("Routes init failed");
-            }
-        } catch (IOException e) {
-            Timber.e(e, "Routes init failed");
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        if (new SettingsManager().getRoutes().isEmpty()) {
+            AssetManager assetManager = AppAdapter.context().getAssets();
+            InputStream is = null;
+            try {
+                is = assetManager.open(ROUTES_ARCHIVE_FILENAME);
+                FileUtil.deleteFile(ROUTES_INTERNAL_LOCATION);
+                if (FileUtil.unzip(is, ROUTES_INTERNAL_LOCATION)) {
+                    saveRoutes();
+                    Timber.d("Routes init done");
+                } else {
+                    Timber.d("Routes init failed");
                 }
+            } catch (IOException e) {
+                Timber.e(e, "Routes init failed");
+            } finally {
+                FileUtil.closeStream(is);
             }
         }
     }

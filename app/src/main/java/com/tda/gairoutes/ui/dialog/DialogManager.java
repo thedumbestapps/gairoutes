@@ -99,6 +99,7 @@ public class DialogManager {
         builder.setCancelable(true);
 
         final String[] routes = settingsManager.getRoutes().toArray(new String[settingsManager.getRoutes().size()]);
+        Arrays.sort(routes);
         String currentRoute = settingsManager.getCurrentRoute();
         int currentRouteIndex = Arrays.asList(routes).indexOf(currentRoute);
 
