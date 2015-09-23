@@ -29,11 +29,11 @@ public class PathUtil {
 
     private static Path makePathDash(float width) {
         Path p = new Path();
-        p.moveTo(width/2, 0);
+        p.moveTo(-width/2, 0);
         p.lineTo(0, -width/2);
-        p.lineTo(width, -width/2);
-        p.lineTo(width*3/2, 0);
-        p.lineTo(width, width / 2);
+        p.lineTo(-width, -width/2);
+        p.lineTo(-width*3/2, 0);
+        p.lineTo(-width, width / 2);
         p.lineTo(0, width / 2);
         return p;
     }
