@@ -16,7 +16,7 @@
           app:showAsAction="always|withText"/>
     <item android:id="@+id/menu_follow_me"
           android:title="@string/menu_follow_me"
-          android:icon="@android:drawable/ic_menu_view"
+          android:icon="@drawable/vector_unfollow"
           android:orderInCategory="80"
           app:showAsAction="always"/>
     <item android:id="@+id/menu_clean_map"

@@ -2,7 +2,10 @@ package com.tda.gairoutes.general;
 
 import android.app.Application;
 
+import com.bettervectordrawable.Convention;
+import com.bettervectordrawable.VectorDrawableCompat;
 import com.tda.gairoutes.BuildConfig;
+import com.tda.gairoutes.R;
 import com.tda.gairoutes.manager.RouteManager;
 
 import timber.log.Timber;
@@ -23,12 +26,18 @@ public class CustomApplication extends Application {
             Timber.plant(new CrashReportingTree());
         }
         RouteManager.initRoutes();
+        initVectorDrawables();
     }
 
     @Override
     public void onTerminate() {
         AppAdapter.destroy();
         super.onTerminate();
+    }
+
+    private void initVectorDrawables() {
+        int[] ids = VectorDrawableCompat.findVectorResourceIdsByConvention(getResources(), R.drawable.class, Convention.ResourceNameHasVectorSuffix);
+        VectorDrawableCompat.enableResourceInterceptionFor(getResources(), ids);
     }
 
     /**
