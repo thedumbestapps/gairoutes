@@ -86,6 +86,7 @@ public class MapFragment extends BaseFragment {
         mBinding.mvMap.setTileSource(mSettingsManager.getMapSource());
         mBinding.mvMap.setBuiltInZoomControls(true);
         mBinding.mvMap.setMultiTouchControls(true);
+        mBinding.mvMap.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mCurrentLocationOverlay = new MyLocationNewOverlay(getActivity(), mBinding.mvMap);
         mCurrentLocationOverlay.setDrawAccuracyEnabled(true);
         mBinding.mvMap.getOverlays().add(mCurrentLocationOverlay);
