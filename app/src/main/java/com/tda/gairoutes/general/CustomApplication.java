@@ -4,10 +4,12 @@ import android.app.Application;
 
 import com.bettervectordrawable.Convention;
 import com.bettervectordrawable.VectorDrawableCompat;
+import com.crashlytics.android.Crashlytics;
 import com.tda.gairoutes.BuildConfig;
 import com.tda.gairoutes.R;
 import com.tda.gairoutes.manager.RouteManager;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 /**
@@ -18,11 +20,12 @@ public class CustomApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         AppAdapter.getInstance().init(this);
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         } else {
-            //Fabric.with(this, new Crashlytics());
+            Fabric.with(this, new Crashlytics());
             Timber.plant(new CrashReportingTree());
         }
         RouteManager.initRoutes();
@@ -40,19 +43,7 @@ public class CustomApplication extends Application {
         VectorDrawableCompat.enableResourceInterceptionFor(getResources(), ids);
     }
 
-    /**
-     * A tree which logs important information for crash reporting.
-     */
     private static class CrashReportingTree extends Timber.HollowTree {
-        @Override
-        public void i(String message, Object... args) {
-            //Crashlytics.log(String.format(message, args));
-        }
-
-        @Override
-        public void i(Throwable t, String message, Object... args) {
-            i(message, args); // Just add to the log.
-        }
 
         @Override
         public void e(String message, Object... args) {
@@ -62,7 +53,7 @@ public class CustomApplication extends Application {
         @Override
         public void e(Throwable t, String message, Object... args) {
             e(message, args);
-            //Crashlytics.logException(t);
+            Crashlytics.logException(t);
         }
     }
 }
