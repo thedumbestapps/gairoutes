@@ -1,9 +1,10 @@
 package com.tda.gairoutes.ui.fragment;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.graphics.Canvas;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +40,8 @@ public class MapFragment extends BaseFragment {
     public static final int MIN_ZOOM = 3;
     public static final int DEFAULT_ZOOM = 16;
 
+    public static final String KEY_ZOOM_LEVEL = "MapFragment.ZoomLevel";
+
     private SettingsManager mSettingsManager;
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener;
     private Menu mToolbarMenu;
@@ -48,9 +51,21 @@ public class MapFragment extends BaseFragment {
 
     private FragmentMapBinding mBinding;
 
+    @Nullable
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        if (savedInstanceState != null && savedInstanceState.getInt(KEY_ZOOM_LEVEL, 0) != 0) {
+            mBinding.mvMap.getController().setZoom(savedInstanceState.getInt(KEY_ZOOM_LEVEL));
+        }
+        return view;
+    }
+
+    @Override
+    public void onDetach() {
+        ViewGroup view = (ViewGroup) getActivity().getWindow().getDecorView();
+        view.removeAllViews();
+        super.onDetach();
     }
 
     @Override
@@ -107,6 +122,12 @@ public class MapFragment extends BaseFragment {
                 return super.onTouchEvent(event, mapView);
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(KEY_ZOOM_LEVEL, mBinding.mvMap.getZoomLevel());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
