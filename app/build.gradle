@@ -17,9 +17,19 @@ repositories {
 apply plugin: 'com.android.databinding'
 
 android {
+    signingConfigs {
+        release {
+            def props = new Properties()
+            props.load(new FileInputStream(rootProject.file("release.properties")))
+
+            storeFile rootProject.file(props.keyStore)
+            storePassword props.keyStorePassword
+            keyAlias props.keyAlias
+            keyPassword props.keyAliasPassword
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "23.0.1"
-
     defaultConfig {
         applicationId "com.tda.gairoutes"
         minSdkVersion 15
@@ -31,6 +41,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -43,7 +54,7 @@ dependencies {
     compile 'com.google.android.gms:play-services:7.8.0'
     compile 'com.jakewharton.timber:timber:2.7.1'
     compile 'com.bettervectordrawable:lib:0.4+'
-    compile (name: 'osmbonuspack_v5.3', ext: 'aar')
+    compile(name: 'osmbonuspack_v5.3', ext: 'aar')
     compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
         transitive = true;
     }

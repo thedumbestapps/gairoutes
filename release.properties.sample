@@ -1,0 +1,4 @@
+keyStore=<keystore location>
+keyStorePassword=<keystore password>
+keyAlias=<alias>
+keyAliasPassword=<alias password>

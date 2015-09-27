@@ -6,3 +6,6 @@
 /captures
 *.iml
 /gradle
+release.properties
+keystore.jks
+*.apk
