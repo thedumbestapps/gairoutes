@@ -39,7 +39,7 @@ public class CustomApplication extends Application {
     }
 
     private void initVectorDrawables() {
-        int[] ids = VectorDrawableCompat.findVectorResourceIdsByConvention(getResources(), R.drawable.class, Convention.ResourceNameHasVectorSuffix);
+        int[] ids = VectorDrawableCompat.findVectorResourceIdsByConvention(getResources(), R.drawable.class, Convention.ResourceNameHasVectorPrefix);
         VectorDrawableCompat.enableResourceInterceptionFor(getResources(), ids);
     }
 
