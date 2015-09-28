@@ -16,5 +16,5 @@
     <string name="dialog_title_routes">Routes</string>
     <string name="dialog_button_update">Update</string>
 
-    <string name="toast_cant_update_routes">Can\'t update routes</string>
+    <string name="toast_cant_update_routes">Can\'t update routes. Please, check Internet connection</string>
 </resources>
