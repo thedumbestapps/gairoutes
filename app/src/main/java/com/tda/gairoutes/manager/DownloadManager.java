@@ -1,6 +1,7 @@
 package com.tda.gairoutes.manager;
 
 import com.tda.gairoutes.misc.util.DateUtil;
+import com.tda.gairoutes.misc.util.NetworkUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +28,15 @@ public class DownloadManager {
     public static void downloadFile(String url, String path, String fileName, DownloadListener downloadListener) {
         try {
             Timber.d("Start downloading from " + url + " to " + path);
+
+            if (!NetworkUtil.isConnectedToInternet()) {
+                Timber.d("No Internet connection. Can't download file.");
+                if (downloadListener != null) {
+                    downloadListener.onDownloadError(url, null);
+                }
+                return;
+            }
+
             HttpURLConnection connection = (HttpURLConnection)new java.net.URL(url).openConnection();
             connection.setDoInput(true);
             connection.setConnectTimeout(TIMEOUT_TIME);
