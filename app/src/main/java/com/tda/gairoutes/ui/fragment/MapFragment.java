@@ -188,10 +188,10 @@ public class MapFragment extends BaseFragment {
     private void updateFollowMeItem(MenuItem item, boolean newFollowMode) {
         if (newFollowMode) {
             mCurrentLocationOverlay.enableFollowLocation();
-            item.setIcon(getResources().getDrawable(R.drawable.vector_unfollow));
+            item.setIcon(AppAdapter.context().getResources().getDrawable(R.drawable.vector_unfollow));
         } else {
             mCurrentLocationOverlay.disableFollowLocation();
-            item.setIcon(getResources().getDrawable(R.drawable.vector_follow));
+            item.setIcon(AppAdapter.context().getResources().getDrawable(R.drawable.vector_follow));
         }
     }
 
