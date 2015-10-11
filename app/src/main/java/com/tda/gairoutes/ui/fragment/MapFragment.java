@@ -56,6 +56,7 @@ public class MapFragment extends BaseFragment {
     private MyLocationNewOverlay mCurrentLocationOverlay;
     private Polyline mRoutePath = PathUtil.getRoutePath();
     private ResourceProxy mResourceProxy = new DefaultResourceProxyImpl(AppAdapter.context());
+    private Overlay mStartPointOverlay;
 
     private FragmentMapBinding mBinding;
 
@@ -222,6 +223,7 @@ public class MapFragment extends BaseFragment {
 
     private void changeRoute() {
         mBinding.mvMap.getOverlays().remove(mRoutePath);
+        mBinding.mvMap.getOverlays().remove(mStartPointOverlay);
         String currentRoute = mSettingsManager.getCurrentRoute();
         Timber.d("Setting '%s' changed to '%s'", SettingsManager.PREF_CURRENT_ROUTE, currentRoute);
         if (currentRoute != null) {
@@ -235,15 +237,20 @@ public class MapFragment extends BaseFragment {
         if (points != null && points.size() > 0) {
             mRoutePath.setPoints(points);
             mBinding.mvMap.getOverlays().add(mRoutePath);
-            mBinding.mvMap.getOverlays().add(getStartPointOverlay(routeName, points));
+            GeoPoint startPoint = points.get(0);
+            mStartPointOverlay = getStartPointOverlay(routeName, startPoint);
+            mBinding.mvMap.getOverlays().add(mStartPointOverlay);
+            if (!mSettingsManager.getFollowMode()) {
+                mBinding.mvMap.getController().setCenter(startPoint);
+            }
         } else {
             Toast.makeText(getActivity(), getString(R.string.toast_route_broken, routeName), Toast.LENGTH_LONG).show();
             Timber.e("Route " + routeName + " is broken");
         }
     }
 
-    private Overlay getStartPointOverlay(String routeName, List<GeoPoint> points) {
-        OverlayItem startItem = new OverlayItem(routeName, null, points.get(points.size()-1));
+    private Overlay getStartPointOverlay(String routeName, GeoPoint startPoint) {
+        OverlayItem startItem = new OverlayItem(routeName, null, startPoint);
         startItem.setMarker(ImageUtil.resizeVectorDrawable(R.drawable.vector_start, 32, 32));
         List<OverlayItem> items = new ArrayList<>();
         items.add(startItem);
