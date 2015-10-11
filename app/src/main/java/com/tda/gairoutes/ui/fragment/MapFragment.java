@@ -12,22 +12,29 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.tda.gairoutes.R;
 import com.tda.gairoutes.databinding.FragmentMapBinding;
 import com.tda.gairoutes.general.AppAdapter;
 import com.tda.gairoutes.manager.RouteManager;
 import com.tda.gairoutes.manager.SettingsManager;
+import com.tda.gairoutes.misc.util.ImageUtil;
 import com.tda.gairoutes.ui.dialog.DialogManager;
 import com.tda.gairoutes.ui.gfx.map.PathUtil;
 
+import org.osmdroid.DefaultResourceProxyImpl;
+import org.osmdroid.ResourceProxy;
 import org.osmdroid.bonuspack.overlays.Polyline;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
@@ -48,6 +55,7 @@ public class MapFragment extends BaseFragment {
 
     private MyLocationNewOverlay mCurrentLocationOverlay;
     private Polyline mRoutePath = PathUtil.getRoutePath();
+    private ResourceProxy mResourceProxy = new DefaultResourceProxyImpl(AppAdapter.context());
 
     private FragmentMapBinding mBinding;
 
@@ -188,10 +196,10 @@ public class MapFragment extends BaseFragment {
     private void updateFollowMeItem(MenuItem item, boolean newFollowMode) {
         if (newFollowMode) {
             mCurrentLocationOverlay.enableFollowLocation();
-            item.setIcon(AppAdapter.context().getResources().getDrawable(R.drawable.vector_unfollow));
+            item.setIcon(AppAdapter.resources().getDrawable(R.drawable.vector_unfollow));
         } else {
             mCurrentLocationOverlay.disableFollowLocation();
-            item.setIcon(AppAdapter.context().getResources().getDrawable(R.drawable.vector_follow));
+            item.setIcon(AppAdapter.resources().getDrawable(R.drawable.vector_follow));
         }
     }
 
@@ -218,14 +226,28 @@ public class MapFragment extends BaseFragment {
         Timber.d("Setting '%s' changed to '%s'", SettingsManager.PREF_CURRENT_ROUTE, currentRoute);
         if (currentRoute != null) {
             List<GeoPoint> points = RouteManager.getGeoPointsForRoute(currentRoute);
-            if (points != null) {
-                mRoutePath.setPoints(points);
-            } else {
-                // TODO Route is broken
-            }
-            mBinding.mvMap.getOverlays().add(mRoutePath);
+            setMapOverlays(currentRoute, points);
         }
         mBinding.mvMap.invalidate();
+    }
+
+    private void setMapOverlays(String routeName, List<GeoPoint> points) {
+        if (points != null && points.size() > 0) {
+            mRoutePath.setPoints(points);
+            mBinding.mvMap.getOverlays().add(mRoutePath);
+            mBinding.mvMap.getOverlays().add(getStartPointOverlay(routeName, points));
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.toast_route_broken, routeName), Toast.LENGTH_LONG).show();
+            Timber.e("Route " + routeName + " is broken");
+        }
+    }
+
+    private Overlay getStartPointOverlay(String routeName, List<GeoPoint> points) {
+        OverlayItem startItem = new OverlayItem(routeName, null, points.get(points.size()-1));
+        startItem.setMarker(ImageUtil.resizeVectorDrawable(R.drawable.vector_start, 32, 32));
+        List<OverlayItem> items = new ArrayList<>();
+        items.add(startItem);
+        return new ItemizedIconOverlay<>(items, null, mResourceProxy);
     }
 
     public void onZoomIn(View view) {

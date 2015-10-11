@@ -17,4 +17,5 @@
     <string name="dialog_button_update">Обновить</string>
 
     <string name="toast_cant_update_routes">Ошибка при обновлении. Проверьте подключение к сети Интернет</string>
+    <string name="toast_route_broken">Невозможно отобразить маршрут %s</string>
 </resources>
