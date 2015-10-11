@@ -14,7 +14,7 @@ import org.osmdroid.bonuspack.overlays.Polyline;
 public class PathUtil {
 
     public static final float PATH_WIDTH = 7f;
-    public static final float PATH_SPACING = PATH_WIDTH * 2;
+    public static final float PATH_SPACING = PATH_WIDTH * 3f;
     public static final float PATH_OFFSET = 0f;
 
     private PathUtil() {}
@@ -32,7 +32,7 @@ public class PathUtil {
         p.moveTo(-width/2, 0);
         p.lineTo(0, -width/2);
         p.lineTo(-width, -width/2);
-        p.lineTo(-width*3/2, 0);
+        p.lineTo(-width*2, 0);
         p.lineTo(-width, width / 2);
         p.lineTo(0, width / 2);
         return p;
