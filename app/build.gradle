@@ -32,8 +32,8 @@ android {
         applicationId "com.tda.gairoutes"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 1010
-        versionName "1.0.1"
+        versionCode 1020
+        versionName "1.0.2"
     }
     buildTypes {
         release {
@@ -44,6 +44,10 @@ android {
     }
     dataBinding {
         enabled = true
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
 }
 
