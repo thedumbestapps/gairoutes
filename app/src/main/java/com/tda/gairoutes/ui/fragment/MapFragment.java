@@ -120,15 +120,12 @@ public class MapFragment extends BaseFragment {
             }
 
             @Override
-            public boolean onTouchEvent(MotionEvent event, MapView mapView) {
-                if (event.getAction() == MotionEvent.ACTION_UP && mSettingsManager.getFollowMode()) {
-                    GeoPoint mCurrentGeoPoint = mSettingsManager.getLastLocation();
-                    if (mCurrentGeoPoint == null || !mCurrentGeoPoint.equals(mBinding.mvMap.getMapCenter())) {
-                        updateFollowMeItem(mToolbarMenu.findItem(R.id.menu_follow_me), false);
-                        mSettingsManager.setFollowMode(false);
-                    }
+            public boolean onScroll(MotionEvent pEvent1, MotionEvent pEvent2, float pDistanceX, float pDistanceY, MapView pMapView) {
+                if (mSettingsManager.getFollowMode()) {
+                    updateFollowMeItem(mToolbarMenu.findItem(R.id.menu_follow_me), false);
+                    mSettingsManager.setFollowMode(false);
                 }
-                return super.onTouchEvent(event, mapView);
+                return super.onScroll(pEvent1, pEvent2, pDistanceX, pDistanceY, pMapView);
             }
         });
     }
