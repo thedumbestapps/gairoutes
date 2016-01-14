@@ -38,7 +38,7 @@ public class PathUtil {
         return p;
     }
 
-    private static Path makePathDash2(float width) {
+    private static Path makePathLongDash(float width) {
         Path p = new Path();
         p.moveTo(0, width/4);
         p.lineTo(-width, width/4);
