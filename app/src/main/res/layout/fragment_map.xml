@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <Button
+        <!--<Button
             android:id="@+id/bZoomIn"
             android:background="@drawable/mr_ic_play_dark"
             android:layout_width="48dp"
@@ -23,7 +23,7 @@
             android:layout_marginStart="@dimen/horizontal_margin"
             android:layout_marginTop="@dimen/vertical_margin"
             android:onClick="@{mapFragmentController.onZoomIn}"
-            android:visibility="gone"/> <!-- do we need it? -->
+            android:visibility="gone"/> &lt;!&ndash; do we need it? &ndash;&gt;
 
         <Button
             android:id="@+id/bZoomOut"
@@ -35,7 +35,7 @@
             android:layout_marginStart="@dimen/horizontal_margin"
             android:layout_marginTop="@dimen/vertical_margin"
             android:onClick="@{mapFragmentController.onZoomOut}"
-            android:visibility="gone"/> <!-- do we need it? -->
+            android:visibility="gone"/>--> <!-- do we need it? -->
 
     </RelativeLayout>
 </layout>
