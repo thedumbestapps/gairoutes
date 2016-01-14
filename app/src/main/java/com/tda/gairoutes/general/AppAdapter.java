@@ -3,6 +3,7 @@ package com.tda.gairoutes.general;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.tda.gairoutes.manager.SettingsManager;
@@ -16,6 +17,7 @@ import java.util.List;
 public class AppAdapter {
 
     private Context mContext;
+    private Resources mResources;
     private SettingsManager mSettingsManager;
     private List<BroadcastReceiver> mLocalReceivers;
 
@@ -36,12 +38,17 @@ public class AppAdapter {
 
     public void init(Context context) {
         mContext = context;
+        mResources = mContext.getResources();
         mSettingsManager = new SettingsManager();
         mLocalReceivers = new ArrayList<>();
     }
 
     public static Context context() {
         return getInstance().mContext;
+    }
+
+    public static Resources resources() {
+        return getInstance().mResources;
     }
 
     public static SettingsManager settings() {
