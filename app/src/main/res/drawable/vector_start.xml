@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:better="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="NewApi"
-    android:viewportWidth="256"
-    better:viewportWidth="256"
-    android:viewportHeight="256"
-    better:viewportHeight="256"
-    android:width="256dp"
-    android:height="256dp">
+        tools:ignore="NewApi"
+        android:viewportWidth="256"
+        better:viewportWidth="256"
+        android:viewportHeight="256"
+        better:viewportHeight="256"
+        android:width="256dp"
+        android:height="256dp">
     <path
         android:pathData="M118.3 13.5l11.3 0 0 229 -11.3 0z"
         better:pathData="M118.3 13.5l11.3 0 0 229 -11.3 0z"
